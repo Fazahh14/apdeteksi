@@ -1,7 +1,10 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_colors.dart';
 import 'home_page.dart';
+import 'deteksi/deteksi_page.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -25,22 +28,40 @@ class _MainShellState extends State<MainShell> {
   Widget build(BuildContext context) {
     final pages = <Widget>[
       const HomePage(),
-      for (final t in _tabs.skip(1))
+
+      // Halaman Deteksi APD
+      ProviderScope(
+        child: DeteksiPage(
+          isActive: _index == 1,
+        ),
+      ),
+
+      // Halaman lainnya
+      for (final t in _tabs.skip(2))
         Center(
           child: Text(
             t.label,
-            style: const TextStyle(color: AppColors.navy, fontSize: 18),
+            style: const TextStyle(
+              color: AppColors.navy,
+              fontSize: 18,
+            ),
           ),
         ),
     ];
 
     return Scaffold(
       backgroundColor: AppColors.cream,
-      body: IndexedStack(index: _index, children: pages),
+      body: IndexedStack(
+        index: _index,
+        children: pages,
+      ),
       bottomNavigationBar: SafeArea(
         child: Container(
           margin: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 8,
+          ),
           decoration: BoxDecoration(
             color: AppColors.navy,
             borderRadius: BorderRadius.circular(28),
@@ -65,6 +86,7 @@ class _MainShellState extends State<MainShell> {
 class _TabItem {
   final String label;
   final IconData icon;
+
   const _TabItem(this.label, this.icon);
 }
 
@@ -72,6 +94,7 @@ class _NavButton extends StatelessWidget {
   final _TabItem item;
   final bool selected;
   final VoidCallback onTap;
+
   const _NavButton({
     required this.item,
     required this.selected,
@@ -81,6 +104,7 @@ class _NavButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = selected ? AppColors.navy : Colors.white;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -101,7 +125,9 @@ class _NavButton extends StatelessWidget {
               style: TextStyle(
                 color: color,
                 fontSize: 10.5,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: selected
+                    ? FontWeight.w700
+                    : FontWeight.w500,
               ),
             ),
           ],
