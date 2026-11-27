@@ -2,8 +2,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../app_colors.dart';
+import '../core/theme/app_colors.dart';
+import '../shell/nav_provider.dart';
 import 'apd_item.dart';
 
 const _kGreenDark = Color(0xFF2E8B3D);
@@ -15,15 +17,7 @@ const _kRedPill = Color(0xFFF8B4B4);
 const _kOrange = Color(0xFFF5A524);
 const _kCardBorder = Color(0xFFD9D4C2);
 
-const _hari = [
-  'Senin',
-  'Selasa',
-  'Rabu',
-  'Kamis',
-  'Jumat',
-  'Sabtu',
-  'Minggu',
-];
+const _hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
 const _bulan = [
   'Januari',
@@ -57,7 +51,7 @@ String _gabung(List<String> names) {
 ///
 /// Menutup dengan `pop(true)` saat tombol "Periksa lagi" ditekan, supaya
 /// halaman sebelumnya bisa mengosongkan hasil.
-class HasilDeteksiPage extends StatelessWidget {
+class HasilDeteksiPage extends ConsumerWidget {
   const HasilDeteksiPage({
     super.key,
     required this.items,
@@ -75,10 +69,12 @@ class HasilDeteksiPage extends StatelessWidget {
   final VoidCallback? onKeRiwayat;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final detected = items.where((e) => e.isDetected).length;
-    final missing =
-        items.where((e) => !e.isDetected).map((e) => e.name).toList();
+    final missing = items
+        .where((e) => !e.isDetected)
+        .map((e) => e.name)
+        .toList();
     final complete = items.isNotEmpty && missing.isEmpty;
 
     final String title;
@@ -137,12 +133,17 @@ class HasilDeteksiPage extends StatelessWidget {
                         height: 48,
                         child: OutlinedButton(
                           onPressed: () {
+                            ref
+                                .read(navIndexProvider.notifier)
+                                .select(2); // tab Riwayat
                             Navigator.of(context).pop();
                             onKeRiwayat?.call();
                           },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.navy,
-                            backgroundColor: Colors.white.withValues(alpha: 0.5),
+                            backgroundColor: Colors.white.withValues(
+                              alpha: 0.5,
+                            ),
                             side: BorderSide(
                               color: AppColors.navy.withValues(alpha: 0.45),
                             ),
@@ -325,10 +326,7 @@ class _LegendDot extends StatelessWidget {
           decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
         const SizedBox(width: 6),
-        Text(
-          text,
-          style: const TextStyle(color: Colors.white, fontSize: 10.5),
-        ),
+        Text(text, style: const TextStyle(color: Colors.white, fontSize: 10.5)),
       ],
     );
   }
@@ -391,10 +389,7 @@ class _ResultAlert extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   message,
-                  style: const TextStyle(
-                    color: AppColors.navy,
-                    fontSize: 11.5,
-                  ),
+                  style: const TextStyle(color: AppColors.navy, fontSize: 11.5),
                 ),
               ],
             ),
@@ -513,8 +508,10 @@ class _FadeInState extends State<_FadeIn> with SingleTickerProviderStateMixin {
     vsync: this,
     duration: const Duration(milliseconds: 420),
   );
-  late final Animation<double> _curve =
-      CurvedAnimation(parent: _c, curve: Curves.easeOutCubic);
+  late final Animation<double> _curve = CurvedAnimation(
+    parent: _c,
+    curve: Curves.easeOutCubic,
+  );
 
   @override
   void initState() {

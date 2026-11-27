@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'app_colors.dart';
+import 'package:apdeteksi/core/theme/app_colors.dart';
 import 'splash_page.dart';
 
 /// Entry point terpisah supaya main.dart tidak diubah.
-/// Jalankan dengan: flutter run -t lib/cekapd/cekapd_main.dart
+/// Jalankan dengan: flutter run -t lib/cekapd_main.dart
 void main() {
-  runApp(const CekApdApp());
+  runApp(const ProviderScope(child: CekApdApp()));
 }
 
 class CekApdApp extends StatelessWidget {

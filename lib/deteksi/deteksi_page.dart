@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../app_colors.dart';
+import '../core/theme/app_colors.dart';
 import 'apd_item.dart';
 import 'deteksi_provider.dart';
 import 'hasil_deteksi_page.dart';
@@ -71,7 +71,11 @@ class DeteksiPage extends ConsumerWidget {
                     ref.read(deteksiProvider.notifier).setCameraActive(v),
                 onFrame: (image, rotation, mirrored) => ref
                     .read(deteksiProvider.notifier)
-                    .processFrame(image, rotation: rotation, mirrored: mirrored),
+                    .processFrame(
+                      image,
+                      rotation: rotation,
+                      mirrored: mirrored,
+                    ),
               ),
             ),
             _StatusPanel(
@@ -133,9 +137,7 @@ class _CameraView extends StatelessWidget {
           ),
         ),
         // Boks deteksi
-        IgnorePointer(
-          child: CustomPaint(painter: _BoxPainter(state.items)),
-        ),
+        IgnorePointer(child: CustomPaint(painter: _BoxPainter(state.items))),
         // Bingkai sudut + garis pindai
         Positioned.fill(
           child: IgnorePointer(
@@ -187,8 +189,11 @@ class _HintChip extends StatelessWidget {
       child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.center_focus_strong_rounded,
-              color: Colors.white, size: 15),
+          Icon(
+            Icons.center_focus_strong_rounded,
+            color: Colors.white,
+            size: 15,
+          ),
           SizedBox(width: 6),
           Text(
             'Posisikan seluruh badan di dalam bingkai',
@@ -366,10 +371,7 @@ class _FramePainter extends CustomPainter {
           ..shader = LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              color.withValues(alpha: 0),
-              color.withValues(alpha: 0.28),
-            ],
+            colors: [color.withValues(alpha: 0), color.withValues(alpha: 0.28)],
           ).createShader(glow),
       );
       canvas.drawLine(
@@ -410,8 +412,11 @@ class _FramePainter extends CustomPainter {
       Path()
         ..moveTo(0, h - arm)
         ..lineTo(0, h - r)
-        ..arcToPoint(Offset(r, h),
-            radius: const Radius.circular(r), clockwise: false)
+        ..arcToPoint(
+          Offset(r, h),
+          radius: const Radius.circular(r),
+          clockwise: false,
+        )
         ..lineTo(arm, h),
       p,
     );
@@ -419,8 +424,11 @@ class _FramePainter extends CustomPainter {
       Path()
         ..moveTo(w - arm, h)
         ..lineTo(w - r, h)
-        ..arcToPoint(Offset(w, h - r),
-            radius: const Radius.circular(r), clockwise: false)
+        ..arcToPoint(
+          Offset(w, h - r),
+          radius: const Radius.circular(r),
+          clockwise: false,
+        )
         ..lineTo(w, h - arm),
       p,
     );
@@ -451,10 +459,7 @@ class _BoxPainter extends CustomPainter {
       final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(6));
 
       // isian transparan + garis tepi
-      canvas.drawRRect(
-        rrect,
-        Paint()..color = color.withValues(alpha: 0.12),
-      );
+      canvas.drawRRect(rrect, Paint()..color = color.withValues(alpha: 0.12));
       canvas.drawRRect(
         rrect,
         Paint()
@@ -557,7 +562,9 @@ class _StatusPanelState extends State<_StatusPanel>
 
   void _onDragEnd(DragEndDetails d) {
     final v = d.primaryVelocity ?? 0;
-    final target = v.abs() > 500 ? (v < 0 ? 1.0 : 0.0) : (_c.value > 0.5 ? 1.0 : 0.0);
+    final target = v.abs() > 500
+        ? (v < 0 ? 1.0 : 0.0)
+        : (_c.value > 0.5 ? 1.0 : 0.0);
     _c.animateTo(target, curve: Curves.easeOutCubic);
   }
 
@@ -619,7 +626,9 @@ class _StatusPanelState extends State<_StatusPanel>
                   onTap: _toggle,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 8, horizontal: 60),
+                      vertical: 8,
+                      horizontal: 60,
+                    ),
                     child: Container(
                       width: 38,
                       height: 4,
@@ -733,92 +742,116 @@ class _GlyphPainter extends CustomPainter {
     switch (id) {
       case 'apron':
         // tali leher
-        open(Path()
-          ..moveTo(9, 8)
-          ..cubicTo(9, 2.5, 15, 2.5, 15, 8));
+        open(
+          Path()
+            ..moveTo(9, 8)
+            ..cubicTo(9, 2.5, 15, 2.5, 15, 8),
+        );
         // badan apron
-        closed(Path()
-          ..moveTo(9, 8)
-          ..lineTo(15, 8)
-          ..lineTo(15, 11)
-          ..lineTo(18, 21)
-          ..lineTo(6, 21)
-          ..lineTo(9, 11)
-          ..close());
+        closed(
+          Path()
+            ..moveTo(9, 8)
+            ..lineTo(15, 8)
+            ..lineTo(15, 11)
+            ..lineTo(18, 21)
+            ..lineTo(6, 21)
+            ..lineTo(9, 11)
+            ..close(),
+        );
         // tali pinggang
-        open(Path()
-          ..moveTo(9, 11)
-          ..lineTo(5.5, 10.5)
-          ..moveTo(15, 11)
-          ..lineTo(18.5, 10.5));
+        open(
+          Path()
+            ..moveTo(9, 11)
+            ..lineTo(5.5, 10.5)
+            ..moveTo(15, 11)
+            ..lineTo(18.5, 10.5),
+        );
         // kantong
-        open(Path()
-          ..moveTo(10, 15)
-          ..lineTo(14, 15)
-          ..lineTo(14, 18)
-          ..lineTo(10, 18)
-          ..close());
+        open(
+          Path()
+            ..moveTo(10, 15)
+            ..lineTo(14, 15)
+            ..lineTo(14, 18)
+            ..lineTo(10, 18)
+            ..close(),
+        );
         break;
 
       case 'sepatu':
         // sepatu bot safety tampak samping
-        closed(Path()
-          ..moveTo(6.5, 3)
-          ..lineTo(13, 3)
-          ..lineTo(13, 9.5)
-          ..cubicTo(14, 11.5, 17.5, 12, 19.5, 14)
-          ..cubicTo(20.7, 15.2, 21, 16, 21, 17)
-          ..lineTo(21, 20)
-          ..lineTo(6.5, 20)
-          ..close());
+        closed(
+          Path()
+            ..moveTo(6.5, 3)
+            ..lineTo(13, 3)
+            ..lineTo(13, 9.5)
+            ..cubicTo(14, 11.5, 17.5, 12, 19.5, 14)
+            ..cubicTo(20.7, 15.2, 21, 16, 21, 17)
+            ..lineTo(21, 20)
+            ..lineTo(6.5, 20)
+            ..close(),
+        );
         // sol
-        open(Path()
-          ..moveTo(6.5, 16.5)
-          ..lineTo(21, 16.5));
+        open(
+          Path()
+            ..moveTo(6.5, 16.5)
+            ..lineTo(21, 16.5),
+        );
         // tali
-        open(Path()
-          ..moveTo(13, 6)
-          ..lineTo(10, 6)
-          ..moveTo(13, 8.5)
-          ..lineTo(10, 8.5));
+        open(
+          Path()
+            ..moveTo(13, 6)
+            ..lineTo(10, 6)
+            ..moveTo(13, 8.5)
+            ..lineTo(10, 8.5),
+        );
         break;
 
       case 'kacamata':
-        closed(Path()
-          ..addOval(Rect.fromCircle(center: const Offset(6.8, 13), radius: 3.8)));
-        closed(Path()
-          ..addOval(
-              Rect.fromCircle(center: const Offset(17.2, 13), radius: 3.8)));
+        closed(
+          Path()..addOval(
+            Rect.fromCircle(center: const Offset(6.8, 13), radius: 3.8),
+          ),
+        );
+        closed(
+          Path()..addOval(
+            Rect.fromCircle(center: const Offset(17.2, 13), radius: 3.8),
+          ),
+        );
         // jembatan hidung
-        open(Path()
-          ..moveTo(10.4, 12.2)
-          ..quadraticBezierTo(12, 10.6, 13.6, 12.2));
+        open(
+          Path()
+            ..moveTo(10.4, 12.2)
+            ..quadraticBezierTo(12, 10.6, 13.6, 12.2),
+        );
         // gagang
-        open(Path()
-          ..moveTo(3.1, 12.2)
-          ..lineTo(2, 9.5)
-          ..moveTo(20.9, 12.2)
-          ..lineTo(22, 9.5));
+        open(
+          Path()
+            ..moveTo(3.1, 12.2)
+            ..lineTo(2, 9.5)
+            ..moveTo(20.9, 12.2)
+            ..lineTo(22, 9.5),
+        );
         break;
 
       case 'helm_las':
         // topeng/helm las
-        closed(Path()
-          ..moveTo(4, 15)
-          ..cubicTo(4, 7, 7.5, 3.5, 12, 3.5)
-          ..cubicTo(16.5, 3.5, 20, 7, 20, 15)
-          ..lineTo(20, 17.5)
-          ..lineTo(17, 20.5)
-          ..lineTo(7, 20.5)
-          ..lineTo(4, 17.5)
-          ..close());
+        closed(
+          Path()
+            ..moveTo(4, 15)
+            ..cubicTo(4, 7, 7.5, 3.5, 12, 3.5)
+            ..cubicTo(16.5, 3.5, 20, 7, 20, 15)
+            ..lineTo(20, 17.5)
+            ..lineTo(17, 20.5)
+            ..lineTo(7, 20.5)
+            ..lineTo(4, 17.5)
+            ..close(),
+        );
         // kaca pelindung
         final visor = RRect.fromRectAndRadius(
           const Rect.fromLTRB(7, 10.5, 17, 15.5),
           const Radius.circular(1.8),
         );
-        canvas.drawRRect(
-            visor, Paint()..color = color.withValues(alpha: 0.4));
+        canvas.drawRRect(visor, Paint()..color = color.withValues(alpha: 0.4));
         canvas.drawRRect(visor, stroke);
         break;
     }
@@ -1073,8 +1106,11 @@ class _ApdCard extends StatelessWidget {
                 color: ok ? _kGreenSoft : _kRedSoft,
                 border: Border.all(color: color, width: 1.5),
               ),
-              child:
-                  Icon(ok ? Icons.check : Icons.close, color: color, size: 17),
+              child: Icon(
+                ok ? Icons.check : Icons.close,
+                color: color,
+                size: 17,
+              ),
             ),
           ),
           const SizedBox(width: 8),

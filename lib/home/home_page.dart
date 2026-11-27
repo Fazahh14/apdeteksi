@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
+import 'package:apdeteksi/core/theme/app_colors.dart';
+import 'package:apdeteksi/core/theme/app_palette.dart';
 
 class _Inspection {
   final bool complete;
@@ -13,11 +14,27 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   static const _days = [
-    'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'
+    'Senin',
+    'Selasa',
+    'Rabu',
+    'Kamis',
+    'Jumat',
+    'Sabtu',
+    'Minggu',
   ];
   static const _months = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
-    'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
   ];
 
   // Data contoh, ganti dengan data asli dari hasil deteksi.
@@ -66,11 +83,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            _SummaryCard(
-              percent: percent,
-              total: _total,
-              complete: _complete,
-            ),
+            _SummaryCard(percent: percent, total: _total, complete: _complete),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -81,7 +94,7 @@ class HomePage extends StatelessWidget {
                     ok: true,
                   ),
                 ),
-                const SizedBox(width: 28),
+                const SizedBox(width: 12),
                 Expanded(
                   child: _StatCard(
                     label: 'Tidak lengkap',
@@ -126,7 +139,10 @@ class HomePage extends StatelessWidget {
                     _InspectionTile(item: _items[i]),
                     if (i != _items.length - 1)
                       const Divider(
-                          height: 1, thickness: 1, color: AppColors.divider),
+                        height: 1,
+                        thickness: 1,
+                        color: AppColors.divider,
+                      ),
                   ],
                 ],
               ),
@@ -175,15 +191,19 @@ class _SummaryCard extends StatelessWidget {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.track,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         '$total pemeriksaan',
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ],
@@ -207,8 +227,7 @@ class _SummaryCard extends StatelessWidget {
                     value: percent,
                     minHeight: 12,
                     backgroundColor: AppColors.track,
-                    valueColor:
-                        const AlwaysStoppedAnimation(AppColors.yellow),
+                    valueColor: const AlwaysStoppedAnimation(AppColors.yellow),
                   ),
                 ),
               ],
@@ -234,23 +253,15 @@ class _SummaryCard extends StatelessWidget {
 class _StatusIcon extends StatelessWidget {
   final bool ok;
   final double size;
-  const _StatusIcon({required this.ok, this.size = 40});
+  const _StatusIcon({required this.ok, this.size = 26});
 
+  // Sama dengan ikon di halaman Riwayat (RecordCard).
   @override
   Widget build(BuildContext context) {
-    final color = ok ? AppColors.green : AppColors.red;
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: color, width: 1.5),
-      ),
-      child: Icon(
-        ok ? Icons.check : Icons.close,
-        color: color,
-        size: size * 0.55,
-      ),
+    return Icon(
+      ok ? Icons.check_circle_outline : Icons.cancel_outlined,
+      color: ok ? AppPalette.ok : AppPalette.bad,
+      size: size,
     );
   }
 }
@@ -259,11 +270,7 @@ class _StatCard extends StatelessWidget {
   final String label;
   final int value;
   final bool ok;
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.ok,
-  });
+  const _StatCard({required this.label, required this.value, required this.ok});
 
   @override
   Widget build(BuildContext context) {
@@ -276,20 +283,24 @@ class _StatCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _StatusIcon(ok: ok, size: 38),
+          _StatusIcon(ok: ok, size: 32),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.navy,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                // FittedBox: teks mengecil otomatis, tidak pernah terpotong.
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: AppPalette.ink,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 Text(
@@ -321,7 +332,7 @@ class _InspectionTile extends StatelessWidget {
       child: Row(
         children: [
           _StatusIcon(ok: item.complete),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
